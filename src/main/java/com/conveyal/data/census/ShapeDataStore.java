@@ -124,4 +124,18 @@ public class ShapeDataStore {
             lasty = y;
         }
     }
+
+    /** get a feature */
+    public GeobufFeature get(long id) {
+        // protective copy, don't get entangled in mapdb async serialization.
+        return features.get(id).clone();
+    }
+
+    /** put a feature that already exists */
+    public void put (GeobufFeature feat) {
+        if (!features.containsKey(feat.numericId))
+            throw new IllegalArgumentException("Feature does not exist in database!");
+
+        features.put(feat.numericId, feat);
+    }
 }

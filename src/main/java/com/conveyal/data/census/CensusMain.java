@@ -32,6 +32,38 @@ public class CensusMain {
                 }
             });
 
+        LOG.info("TIGER done");
+
+        LOG.info("Loading LODES workforce data");
+        File workforce = new File(indir, "workforce");
+        Stream.of(workforce.listFiles())
+                .filter(f -> f.getName().endsWith(".csv.gz"))
+                .parallel()
+                .forEach(f -> {
+                    LOG.info("Loading file {}", f);
+                    try {
+                        new LodesSource(f, LodesSource.LodesType.RESIDENCE).load(store);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        LOG.info("Workforce done");
+
+        LOG.info("Loading LODES jobs data");
+        File jobs = new File(indir, "jobs");
+        Stream.of(jobs.listFiles())
+                .filter(f -> f.getName().endsWith(".csv.gz"))
+                .parallel()
+                .forEach(f -> {
+                    LOG.info("Loading file {}", f);
+                    try {
+                        new LodesSource(f, LodesSource.LodesType.WORKPLACE).load(store);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+        LOG.info("Jobs done");
+
         store.writeTiles(new File(indir, "tiles"));
     }
 }
