@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.util.stream.Stream;
 
 /**
  * Import data from the US Census into a seamless store in S3 or on disk.
@@ -17,17 +18,19 @@ public class CensusMain {
 
         ShapeDataStore store = new ShapeDataStore();
 
-        // load up the tiger files
+        // load up the tiger files in parallel
         LOG.info("Loading TIGER (geometry)");
-        for (File f : tiger.listFiles()) {
-            if (!f.getName().endsWith(".shp"))
-                continue;
-
-            LOG.info("Loading file {}", f);
-
-            TigerLineSource src = new TigerLineSource(f);
-            src.load(store);
-        }
+        Stream.of(tiger.listFiles())
+            .filter(f -> f.getName().endsWith(".shp"))
+            .forEach(f -> {
+                LOG.info("Loading file {}", f);
+                TigerLineSource src = new TigerLineSource(f);
+                try {
+                    src.load(store);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
         store.writeTiles(new File(indir, "tiles"));
     }

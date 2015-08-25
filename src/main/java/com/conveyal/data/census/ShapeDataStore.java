@@ -97,7 +97,6 @@ public class ShapeDataStore {
     public void writeTiles (File file) throws IOException {
         int lastx = -1, lasty = -1;
 
-        File xfile;
         List<GeobufFeature> featuresThisTile = new ArrayList<>();
 
         for (Object[] val : tiles) {
