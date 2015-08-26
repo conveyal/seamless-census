@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 /**
  * Import data from the US Census into a seamless store in S3 or on disk.
  */
-public class CensusMain {
-    protected static final Logger LOG = LoggerFactory.getLogger(CensusMain.class);
+public class CensusLoader {
+    protected static final Logger LOG = LoggerFactory.getLogger(CensusLoader.class);
 
     public static void main (String... args) throws Exception {
         File indir = new File(args[0]);
@@ -38,7 +38,6 @@ public class CensusMain {
         File workforce = new File(indir, "workforce");
         Stream.of(workforce.listFiles())
                 .filter(f -> f.getName().endsWith(".csv.gz"))
-                .parallel()
                 .forEach(f -> {
                     LOG.info("Loading file {}", f);
                     try {
@@ -53,7 +52,6 @@ public class CensusMain {
         File jobs = new File(indir, "jobs");
         Stream.of(jobs.listFiles())
                 .filter(f -> f.getName().endsWith(".csv.gz"))
-                .parallel()
                 .forEach(f -> {
                     LOG.info("Loading file {}", f);
                     try {

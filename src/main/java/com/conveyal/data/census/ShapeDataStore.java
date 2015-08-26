@@ -23,6 +23,8 @@ import java.util.zip.GZIPOutputStream;
  * Store geographic data by ID, with index by zoom-11 tile.
  */
 public class ShapeDataStore {
+    public static final int ZOOM_LEVEL = 11;
+
     private static final Logger LOG = LoggerFactory.getLogger(ShapeDataStore.class);
 
     private DB db;
@@ -58,8 +60,8 @@ public class ShapeDataStore {
 
             // figure out which z11 tiles this is part of
             Envelope e = feat1.geometry.getEnvelopeInternal();
-            for (int x = lon2tile(e.getMinX(), 11); x <= lon2tile(e.getMaxX(), 11); x++) {
-                for (int y = lat2tile(e.getMaxY(), 11); y <= lat2tile(e.getMinY(), 11); y++) {
+            for (int x = lon2tile(e.getMinX(), ZOOM_LEVEL); x <= lon2tile(e.getMaxX(), ZOOM_LEVEL); x++) {
+                for (int y = lat2tile(e.getMaxY(), ZOOM_LEVEL); y <= lat2tile(e.getMinY(), ZOOM_LEVEL); y++) {
                     tiles.add(new Object[] {x, y, feat1.numericId});
                 }
             }
@@ -111,7 +113,7 @@ public class ShapeDataStore {
                     File dir = new File(file, "" + lastx);
                     File out = new File(dir, lasty + ".pbf.gz");
                     dir.mkdirs();
-                    GeobufEncoder enc = new GeobufEncoder(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(out))), 6);
+                    GeobufEncoder enc = new GeobufEncoder(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(out))), 12);
                     enc.writeFeatureCollection(featuresThisTile);
                     enc.close();
                     featuresThisTile.clear();
