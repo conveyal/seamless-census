@@ -40,8 +40,8 @@ public class ShapeDataStore {
     private BTreeMap<Long, GeobufFeature> features;
 
     public ShapeDataStore() {
-        db = DBMaker.tempFileDB().deleteFilesAfterClose().fileMmapEnable().asyncWriteEnable()
-                .asyncWriteFlushDelay(10000).asyncWriteQueueSize(4096).make();
+        db = DBMaker.tempFileDB().deleteFilesAfterClose().asyncWriteEnable()
+                .asyncWriteFlushDelay(1000).make();
 
         features = db.treeMapCreate("features")
                 .keySerializer(BTreeKeySerializer.LONG)
