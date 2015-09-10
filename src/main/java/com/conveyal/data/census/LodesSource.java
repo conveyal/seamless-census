@@ -87,6 +87,7 @@ public class LodesSource {
         colNames.put("CFS03", "at firms with 50-249 employees");
         colNames.put("CFS04", "at firms with 250-499 employees");
         colNames.put("CFS05", "at firms with 500 or more employees");
+        colNames.put("createdate", "Data creation date");
 
         reader.readHeaders();
         String[] headers = reader.getHeaders();
