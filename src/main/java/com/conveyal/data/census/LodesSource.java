@@ -1,7 +1,7 @@
 package com.conveyal.data.census;
 
 import com.conveyal.data.geobuf.GeobufFeature;
-import com.opencsv.CSVReader;
+import com.csvreader.CsvReader;
 
 import java.io.*;
 import java.util.HashMap;
@@ -22,9 +22,7 @@ public class LodesSource {
 
     public void load(ShapeDataStore store) throws Exception {
         InputStream csv = new GZIPInputStream(new BufferedInputStream(new FileInputStream(input)));
-        CSVReader reader = new CSVReader(new InputStreamReader(csv));
-
-        String[] headers = reader.readNext();
+        CsvReader reader = new CsvReader(new InputStreamReader(csv));
 
         // rename the columns to something useful
         //http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.1.pdf#page=7&zoom=auto,-266,580
@@ -90,17 +88,15 @@ public class LodesSource {
         colNames.put("CFS04", "at firms with 250-499 employees");
         colNames.put("CFS05", "at firms with 500 or more employees");
 
-        int blockIdCol = 0;
-        while (!"h_geocode".equals(headers[blockIdCol]) && !"w_geocode".equals(headers[blockIdCol]))
-            blockIdCol++;
-
-        String[] line;
+        reader.readHeaders();
+        String[] headers = reader.getHeaders();
 
         // read the file
-        while ((line = reader.readNext()) != null) {
-            long id = Long.parseLong(line[blockIdCol]);
+        while (reader.readRecord()) {
+            long id = Long.parseLong(reader.get(type == LodesType.WORKPLACE ? "w_geocode" : "h_geocode"));
             GeobufFeature feat = store.get(id);
 
+            String[] line = reader.getValues();
             for (int i = 0; i < line.length; i++) {
                 String col = headers[i];
 

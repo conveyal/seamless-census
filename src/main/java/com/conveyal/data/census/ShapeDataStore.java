@@ -27,6 +27,9 @@ public class ShapeDataStore {
 
     private static final Logger LOG = LoggerFactory.getLogger(ShapeDataStore.class);
 
+    /** number of decimal places of precision to store */
+    public static final int PRECISION = 12;
+
     private DB db;
 
     /**
@@ -102,9 +105,9 @@ public class ShapeDataStore {
         List<GeobufFeature> featuresThisTile = new ArrayList<>();
 
         for (Object[] val : tiles) {
-            int x = (int) val[0];
-            int y = (int) val[1];
-            long id = (long) val[2];
+            int x = (Integer) val[0];
+            int y = (Integer) val[1];
+            long id = (Long) val[2];
 
             if (x != lastx || y != lasty) {
                 if (!featuresThisTile.isEmpty()) {
@@ -113,7 +116,7 @@ public class ShapeDataStore {
                     File dir = new File(file, "" + lastx);
                     File out = new File(dir, lasty + ".pbf.gz");
                     dir.mkdirs();
-                    GeobufEncoder enc = new GeobufEncoder(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(out))), 12);
+                    GeobufEncoder enc = new GeobufEncoder(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(out))), PRECISION);
                     enc.writeFeatureCollection(featuresThisTile);
                     enc.close();
                     featuresThisTile.clear();
