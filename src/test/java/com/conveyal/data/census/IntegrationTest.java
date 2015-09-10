@@ -3,16 +3,11 @@ package com.conveyal.data.census;
 import com.conveyal.data.geobuf.GeobufDecoder;
 import com.conveyal.data.geobuf.GeobufFeature;
 import com.csvreader.CsvReader;
-import com.google.common.collect.Sets;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
 import com.vividsolutions.jts.geom.Envelope;
-import geobuf.Geobuf;
-import gnu.trove.iterator.TIntObjectIterator;
 import gnu.trove.map.TLongObjectMap;
-import gnu.trove.map.hash.TIntObjectHashMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
-import gnu.trove.map.hash.TObjectIntHashMap;
 import junit.framework.TestCase;
 import org.junit.Test;
 
