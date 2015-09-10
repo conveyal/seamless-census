@@ -15,10 +15,14 @@ import java.util.Map;
 public class CensusExtractor {
     public static void main (String... args) throws IOException {
         if (args.length != 5 && args.length != 6) {
-            System.err.println("usage: CensusExtractor [s3://bucket/]file_prefix n e s w [outfile.json]");
+            System.err.println("usage: CensusExtractor (s3://bucket|data_dir) n e s w [outfile.json]");
         }
 
-        SeamlessSource source = new FileSeamlessSource(args[0]);
+        SeamlessSource source;
+        if (!args[0].startsWith("s3://"))
+            source = new FileSeamlessSource(args[0]);
+        else
+            source = new S3SeamlessSource(args[0].substring(5));
 
         long start = System.currentTimeMillis();
 

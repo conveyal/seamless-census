@@ -62,6 +62,10 @@ public class CensusLoader {
                 });
         LOG.info("Jobs done");
 
-        store.writeTiles(new File(indir, "tiles"));
+        if (args.length == 1)
+            store.writeTiles(new File(indir, "tiles"));
+        else
+            // write to s3
+            store.writeTilesToS3(args[1]);
     }
 }

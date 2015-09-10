@@ -50,6 +50,11 @@ public abstract class SeamlessSource {
         for (int x = lon2tile(west, ZOOM_LEVEL); x <= lon2tile(east, ZOOM_LEVEL); x++) {
             for (int y = lat2tile(north, ZOOM_LEVEL); y <= lat2tile(south, ZOOM_LEVEL); y++) {
                 InputStream is = getInputStream(x, y);
+
+                if (is == null)
+                    // no data in this tile
+                    continue;
+
                 // decoder closes input stream as soon as it has read the tile
                 GeobufDecoder decoder = new GeobufDecoder(new GZIPInputStream(new BufferedInputStream(is)));
 

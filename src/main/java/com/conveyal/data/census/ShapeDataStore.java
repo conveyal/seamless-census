@@ -1,5 +1,8 @@
 package com.conveyal.data.census;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
 import com.vividsolutions.jts.geom.Envelope;
@@ -10,13 +13,15 @@ import org.mapdb.DBMaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.BiFunction;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -66,7 +71,7 @@ public class ShapeDataStore {
             Envelope e = feat1.geometry.getEnvelopeInternal();
             for (int x = lon2tile(e.getMinX(), ZOOM_LEVEL); x <= lon2tile(e.getMaxX(), ZOOM_LEVEL); x++) {
                 for (int y = lat2tile(e.getMaxY(), ZOOM_LEVEL); y <= lat2tile(e.getMinY(), ZOOM_LEVEL); y++) {
-                    tiles.add(new Object[] {x, y, feat1.numericId});
+                    tiles.add(new Object[]{x, y, feat1.numericId});
                 }
             }
         });
@@ -101,6 +106,45 @@ public class ShapeDataStore {
 
     /** Write GeoBuf tiles to a directory */
     public void writeTiles (File file) throws IOException {
+        writeTilesInternal((x, y) -> {
+            // write out the features
+            File dir = new File(file, "" + x);
+            File out = new File(dir, y + ".pbf.gz");
+            dir.mkdirs();
+            return new FileOutputStream(out);
+        });
+    }
+
+    /** Write GeoBuf tiles to S3 */
+    public void writeTilesToS3 (String bucketName) throws IOException {
+        // set up an upload thread
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        // initialize an S3 client
+        AmazonS3 s3 = new AmazonS3Client();
+
+        try {
+            writeTilesInternal((x, y) -> {
+                PipedInputStream is = new PipedInputStream();
+                PipedOutputStream os = new PipedOutputStream(is);
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setContentType("application/gzip");
+
+                // perform the upload in its own thread so it doesn't deadlock
+                executor.execute(() -> s3.putObject(bucketName, String.format("%d/%d.pbf.gz", x, y), is, metadata));
+                return os;
+            });
+        } finally {
+            // allow the JVM to exit
+            executor.shutdown();
+        }
+    }
+
+    /**
+     * generic write tiles function, calls function with x and y indices to get an output stream, which it will close itself.
+     * The Internal suffix is because lambdas in java get confused with overloaded functions
+     */
+    private void writeTilesInternal(TileOutputStreamProducer outputStreamForTile) throws IOException {
         int lastx = -1, lasty = -1;
 
         List<GeobufFeature> featuresThisTile = new ArrayList<>();
@@ -113,11 +157,7 @@ public class ShapeDataStore {
             if (x != lastx || y != lasty) {
                 if (!featuresThisTile.isEmpty()) {
                     LOG.debug("x: {}, y: {}, {} features", lastx, lasty, featuresThisTile.size());
-                    // write out the features
-                    File dir = new File(file, "" + lastx);
-                    File out = new File(dir, lasty + ".pbf.gz");
-                    dir.mkdirs();
-                    GeobufEncoder enc = new GeobufEncoder(new GZIPOutputStream(new BufferedOutputStream(new FileOutputStream(out))), PRECISION);
+                    GeobufEncoder enc = new GeobufEncoder(new GZIPOutputStream(new BufferedOutputStream(outputStreamForTile.apply(lastx, lasty))), PRECISION);
                     enc.writeFeatureCollection(featuresThisTile);
                     enc.close();
                     featuresThisTile.clear();
@@ -143,5 +183,10 @@ public class ShapeDataStore {
             throw new IllegalArgumentException("Feature does not exist in database!");
 
         features.put(feat.numericId, feat);
+    }
+
+    @FunctionalInterface
+    private interface TileOutputStreamProducer {
+        public OutputStream apply (int x, int y) throws IOException;
     }
 }

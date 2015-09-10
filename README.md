@@ -4,7 +4,29 @@ Import US Census data into a seamless storage environment.
 
 ## Usage
 
-TODO
+### Download data
+
+You can use the following command to download
+data from the Census bureau. Create a temporary directory to receive the files before you combine them and load them to
+S3, in a location that has plenty of disk space. The arguments are the temporary directory and the two-letter postal abbreviations
+of the states for which you want to retrieve data (you can also use the special code ALL to retrieve data for every state, territory and district).
+The command below, for instance, would download data for the greater Washington, DC megalopolis.
+
+    python downloadData.py temporary_dir DC MD VA WV DE
+
+### Load data
+
+Use the same temporary directory
+you used above. If you omit the s3 bucket name, it will place the tiles in the `tiles` directory in the temporary directory.
+
+    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusLoader" -Dexec.args="temporary_dir s3_bucket_name"
+
+### Extract data
+
+Now for the fun part. The following command will extract the data stored in the s3 bucket specified, using the bounding box specified,
+to the geobuf file out.pbf.
+
+    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusExtractor" -Dexec.args="s3://bucket_name n e s w out.pbf"
 
 ## Data storage
 
