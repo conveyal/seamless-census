@@ -44,7 +44,8 @@ public class ShapeDataStore {
 
     public ShapeDataStore() {
         db = DBMaker.tempFileDB().deleteFilesAfterClose().asyncWriteEnable()
-                .asyncWriteFlushDelay(1000).make();
+                .cacheWeakRefEnable()
+                .make();
 
         features = db.treeMapCreate("features")
                 .keySerializer(BTreeKeySerializer.LONG)
