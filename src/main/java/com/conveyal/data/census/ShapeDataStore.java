@@ -49,6 +49,7 @@ public class ShapeDataStore {
 
     public ShapeDataStore() {
         db = DBMaker.tempFileDB().deleteFilesAfterClose().asyncWriteEnable()
+                .transactionDisable()
                 .cacheWeakRefEnable()
                 .make();
 
