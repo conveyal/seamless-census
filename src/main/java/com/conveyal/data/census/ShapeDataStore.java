@@ -50,7 +50,8 @@ public class ShapeDataStore {
     public ShapeDataStore() {
         db = DBMaker.tempFileDB().deleteFilesAfterClose().asyncWriteEnable()
                 .transactionDisable()
-                .cacheWeakRefEnable()
+                .asyncWriteEnable()
+                .asyncWriteFlushDelay(1000)
                 .make();
 
         features = db.treeMapCreate("features")
