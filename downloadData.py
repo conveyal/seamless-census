@@ -97,7 +97,7 @@ for state in states:
     # get tiger
     fips = fipsCodes[state]
     zipout = os.path.join(outDir, "tiger", "{0}.zip".format(state))
-    urlretrieve("ftp://ftp2.census.gov/geo/tiger/TIGER2015/TABBLOCK/tl_2015_{0}_tabblock10.zip".format(fips), zipout)
+    urlretrieve("ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/tl_2010_{0}_tabblock10.zip".format(fips), zipout)
 
     # unzip it
     # adapted from http://stackoverflow.com/questions/12886768/
