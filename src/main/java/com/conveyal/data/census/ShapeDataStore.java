@@ -6,10 +6,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
 import com.vividsolutions.jts.geom.Envelope;
-import org.mapdb.BTreeKeySerializer;
-import org.mapdb.BTreeMap;
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
+import org.mapdb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,12 +47,20 @@ public class ShapeDataStore {
     public ShapeDataStore() {
         db = DBMaker.tempFileDB().deleteFilesAfterClose().asyncWriteEnable()
                 .transactionDisable()
+                .fileMmapEnable()
                 .asyncWriteEnable()
                 .asyncWriteFlushDelay(1000)
+                .executorEnable()
+                .asyncWriteQueueSize(10000)
+                // start with 1GB
+                .allocateStartSize(1024 * 1024 * 1024)
+                // and bump by 512MB
+                .allocateIncrement(512 * 1024 * 1024)
                 .make();
 
         features = db.treeMapCreate("features")
                 .keySerializer(BTreeKeySerializer.LONG)
+                .valueSerializer(new GeobufEncoder.GeobufFeatureSerializer(12))
                 .counterEnable()
                 .make();
 
@@ -95,6 +100,10 @@ public class ShapeDataStore {
 
         // scale
         return (int) (lon * Math.pow(2, zoom) / 360);
+    }
+
+    public void close () {
+        db.close();
     }
 
     /** Get the latitude of a particular tile */

@@ -67,5 +67,7 @@ public class CensusLoader {
         else
             // write to s3
             store.writeTilesToS3(args[1]);
+
+        store.close();
     }
 }
