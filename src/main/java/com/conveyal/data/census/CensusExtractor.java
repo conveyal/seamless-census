@@ -13,6 +13,13 @@ import java.util.Map;
  * Extract Census data from a seamless datastore.
  */
 public class CensusExtractor {
+    /**
+     * The precision to use for output files.
+     * Set above 6 at your own risk; higher precision files work fine with the reference implementation and with geobuf-java,
+     * but break with pygeobuf (see https://github.com/mapbox/pygeobuf/issues/21)
+     */
+    private static final int PRECISION = 6;
+
     public static void main (String... args) throws IOException {
         if (args.length != 5 && args.length != 6) {
             System.err.println("usage: CensusExtractor (s3://bucket|data_dir) n e s w [outfile.json]");
@@ -43,7 +50,7 @@ public class CensusExtractor {
         else
             out = System.out;
 
-        GeobufEncoder encoder = new GeobufEncoder(out, 12);
+        GeobufEncoder encoder = new GeobufEncoder(out, PRECISION);
         encoder.writeFeatureCollection(features.values());
         encoder.close();
 
