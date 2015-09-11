@@ -9,6 +9,7 @@ import zipfile
 import os
 import os.path
 from shutil import copyfileobj
+from time import sleep
 
 # map from state abbreviations to FIPS codes
 # per http://www.epa.gov/enviro/html/codes/state.html
@@ -90,6 +91,18 @@ os.makedirs(os.path.join(outDir, 'tiger'))
 os.makedirs(os.path.join(outDir, 'jobs'))
 os.makedirs(os.path.join(outDir, 'workforce'))
 
+# download resiliently
+def retrieve(url, path):
+    for i in xrange(50):
+        try:
+            urlretrieve(url, path)
+        except:
+            print "error retrieving {0}, retrying".format(url)
+            sleep(5)
+        else:
+            break
+
+
 # download the states
 for state in states:
     print 'processing %s' % state
@@ -97,7 +110,7 @@ for state in states:
     # get tiger
     fips = fipsCodes[state]
     zipout = os.path.join(outDir, "tiger", "{0}.zip".format(state))
-    urlretrieve("ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/tl_2010_{0}_tabblock10.zip".format(fips), zipout)
+    retrieve("ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/tl_2010_{0}_tabblock10.zip".format(fips), zipout)
 
     # unzip it
     # adapted from http://stackoverflow.com/questions/12886768/
@@ -132,10 +145,10 @@ for state in states:
 
         # get the rac file
         out = os.path.join(outDir, 'workforce', '{0}_{1}_rac.csv.gz'.format(state, year))
-        urlretrieve("http://lehd.ces.census.gov/data/lodes/LODES7/{0}/rac/{0}_rac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
+        retrieve("http://lehd.ces.census.gov/data/lodes/LODES7/{0}/rac/{0}_rac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
 
         # get the wac file
         out = os.path.join(outDir, 'jobs', '{0}_{1}_wac.csv.gz'.format(state, year))
-        urlretrieve("http://lehd.ces.census.gov/data/lodes/LODES7/{0}/wac/{0}_wac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
+        retrieve("http://lehd.ces.census.gov/data/lodes/LODES7/{0}/wac/{0}_wac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
 
     print 'Done with {0}'.format(state)
