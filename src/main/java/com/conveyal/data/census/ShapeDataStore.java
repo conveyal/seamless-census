@@ -14,10 +14,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableSet;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.*;
 import java.util.function.BiFunction;
 import java.util.zip.GZIPOutputStream;
 
@@ -148,6 +145,11 @@ public class ShapeDataStore {
         } finally {
             // allow the JVM to exit
             executor.shutdown();
+            try {
+                executor.awaitTermination(1, TimeUnit.HOURS);
+            } catch (InterruptedException e) {
+                LOG.error("Interrupted while waiting for S3 uploads to finish");
+            }
         }
     }
 
@@ -156,7 +158,7 @@ public class ShapeDataStore {
      * The Internal suffix is because lambdas in java get confused with overloaded functions
      */
     private void writeTilesInternal(TileOutputStreamProducer outputStreamForTile) throws IOException {
-        int lastx = -1, lasty = -1;
+        int lastx = -1, lasty = -1, tileCount = 0;
 
         List<GeobufFeature> featuresThisTile = new ArrayList<>();
 
@@ -172,6 +174,8 @@ public class ShapeDataStore {
                     enc.writeFeatureCollection(featuresThisTile);
                     enc.close();
                     featuresThisTile.clear();
+
+                    tileCount++;
                 }
             }
 
@@ -180,6 +184,8 @@ public class ShapeDataStore {
             lastx = x;
             lasty = y;
         }
+
+        LOG.info("Wrote {} tiles", tileCount);
     }
 
     /** get a feature */
