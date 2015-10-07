@@ -2,11 +2,15 @@ package com.conveyal.data.census;
 
 import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
+import com.conveyal.geojson.GeoJsonModule;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryCollection;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Polygon;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,8 +25,10 @@ public class CensusExtractor {
     private static final int PRECISION = 6;
 
     public static void main (String... args) throws IOException {
-        if (args.length != 5 && args.length != 6) {
+        if (args.length < 3 || args.length > 6) {
             System.err.println("usage: CensusExtractor (s3://bucket|data_dir) n e s w [outfile.json]");
+            System.err.println("   or: CensusExtractor (s3://bucket|data_dir) boundary.geojson [outfile.json]");
+            return;
         }
 
         SeamlessSource source;
@@ -33,12 +39,26 @@ public class CensusExtractor {
 
         long start = System.currentTimeMillis();
 
-        Map<Long, GeobufFeature> features = source.extract(Double.parseDouble(args[1]),
-                Double.parseDouble(args[2]),
-                Double.parseDouble(args[3]),
-                Double.parseDouble(args[4]),
-                false
-                );
+        Map<Long, GeobufFeature> features;
+
+        if (args.length >= 4) {
+            features = source.extract(Double.parseDouble(args[1]),
+                    Double.parseDouble(args[2]),
+                    Double.parseDouble(args[3]),
+                    Double.parseDouble(args[4]),
+                    false
+            );
+        }
+        else {
+            // read geojson boundary
+            ObjectMapper om = new ObjectMapper();
+            om.registerModule(new GeoJsonModule());
+            FileInputStream fis = new FileInputStream(new File(args[1]));
+            FeatureCollection fc = om.readValue(fis, FeatureCollection.class);
+            fis.close();
+
+            features = source.extract(fc.features.get(0).geometry, false);
+        }
 
         OutputStream out;
 
@@ -47,6 +67,8 @@ public class CensusExtractor {
 
         if (args.length == 6)
             out = new FileOutputStream(new File(args[5]));
+        else if (args.length == 3)
+            out = new FileOutputStream(new File(args[2]));
         else
             out = System.out;
 
@@ -56,5 +78,19 @@ public class CensusExtractor {
 
         if (out instanceof FileOutputStream)
             out.close();
+    }
+
+    // rudimentary geojson classes to deserialize feature collection
+
+    public static class FeatureCollection {
+        public String type;
+        public Map<String, Object> crs;
+        public List<Feature> features;
+    }
+
+    public static class Feature {
+        public String type;
+        public Map<String, Object> properties;
+        public Geometry geometry;
     }
 }

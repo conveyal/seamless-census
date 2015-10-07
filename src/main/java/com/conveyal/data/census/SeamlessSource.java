@@ -2,9 +2,8 @@ package com.conveyal.data.census;
 
 import com.conveyal.data.geobuf.GeobufDecoder;
 import com.conveyal.data.geobuf.GeobufFeature;
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.geom.*;
+import com.vividsolutions.jts.geom.prep.PreparedPolygon;
 import com.vividsolutions.jts.util.GeometricShapeFactory;
 import org.mapdb.DBMaker;
 import org.slf4j.Logger;
@@ -31,24 +30,44 @@ public abstract class SeamlessSource {
 
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
+    /** Extract features by bounding box */
     public Map<Long, GeobufFeature> extract(double north, double east, double south, double west, boolean onDisk) throws
             IOException {
-        Map<Long, GeobufFeature> ret;
-
         GeometricShapeFactory factory = new GeometricShapeFactory(geometryFactory);
         factory.setCentre(new Coordinate((east + west) / 2, (north + south) / 2));
         factory.setWidth(east - west);
         factory.setHeight(north - south);
         Polygon rect = factory.createRectangle();
+        return extract(rect, onDisk);
+    }
+
+    /** Extract features by arbitrary polygons */
+    public Map<Long, GeobufFeature> extract(Geometry bounds, boolean onDisk) throws IOException {
+        Map<Long, GeobufFeature> ret;
 
         if (onDisk)
             ret = DBMaker.tempTreeMap();
         else
             ret = new HashMap<>();
 
+        Envelope env = bounds.getEnvelopeInternal();
+        double west = env.getMinX(), east = env.getMaxX(), north = env.getMaxY(), south = env.getMinY();
+
+        // TODO: use prepared polygons
+
+        // figure out how many tiles we're requesting
+        int minX = lon2tile(west, ZOOM_LEVEL), maxX = lon2tile(east, ZOOM_LEVEL),
+                minY = lat2tile(north, ZOOM_LEVEL), maxY = lat2tile(south, ZOOM_LEVEL);
+
+        int tcount = (maxX - minX + 1) * (maxY - minY + 1);
+
+        LOG.info("Requesting {} tiles", tcount);
+
+        int fcount = 0;
+
         // read all the relevant tiles
-        for (int x = lon2tile(west, ZOOM_LEVEL); x <= lon2tile(east, ZOOM_LEVEL); x++) {
-            for (int y = lat2tile(north, ZOOM_LEVEL); y <= lat2tile(south, ZOOM_LEVEL); y++) {
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
                 InputStream is = getInputStream(x, y);
 
                 if (is == null)
@@ -64,9 +83,13 @@ public abstract class SeamlessSource {
                     if (ret.containsKey(f.numericId))
                         continue;
 
-                    // confirm that it falls within the envelope
-                    if (!rect.disjoint(f.geometry))
+                    if (!bounds.disjoint(f.geometry)) {
                         ret.put(f.numericId, f);
+                        fcount++;
+
+                        if (fcount % 1000 == 0)
+                            LOG.info("Read {} features", fcount);
+                    }
                 }
             }
         }
