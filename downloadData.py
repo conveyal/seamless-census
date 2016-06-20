@@ -130,13 +130,14 @@ for state in states:
     print 'Downloading LODES data'
 
     # figure out the year of the latest available data
-    # Most states have 2013 data available
-    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.1.pdf, page 2f
-    year = 2013
+    # Most states have 2014 data available
+    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.2.pdf, page 2f
+    year = 2014
 
-    if state == 'KS':
-        year = 2011
-    elif state == 'MA' or state == 'PR' or state == 'VI':
+    # Wyoming does not have LODES2014 data available
+    if state == 'WY':
+        year = 2013
+    elif state == 'PR' or state == 'VI':
         print '{0} does not have LODES data available'.format(state)
         year = 0
 
