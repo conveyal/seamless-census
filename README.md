@@ -39,6 +39,8 @@ Enumeration units that fall into two tiles should be included in both tiles. It 
 of the data consumer to deduplicate them; this can be done based on IDs. An enumeration unit that is
 duplicated across tiles must have the same integer ID in both tiles.
 
+We have already loaded LODES data from 2013 and 2014 in the S3 buckets `lodes-data` and `lodes-data-2014`, which are publicly readable and requester-pays. The 2013 data lacks Massachusetts, and uses 2011 data for Kansas, due to data availability. The 2014 data does not have these problems.
+
 ## Use in Analyst Server
 
 Any dataset that can be placed in this format can be used in Analyst Server.
