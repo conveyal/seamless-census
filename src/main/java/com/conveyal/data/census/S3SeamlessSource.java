@@ -3,6 +3,7 @@ package com.conveyal.data.census;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +23,10 @@ public class S3SeamlessSource extends SeamlessSource {
     @Override
     protected InputStream getInputStream(int x, int y) throws IOException {
         try {
-            return s3.getObject(bucketName, String.format("%d/%d.pbf.gz", x, y)).getObjectContent();
+            GetObjectRequest req = new GetObjectRequest(bucketName, String.format("%d/%d.pbf.gz", x, y));
+            // the LODES bucket is requester-pays.
+            req.setRequesterPays(true);
+            return s3.getObject(req).getObjectContent();
         } catch (AmazonS3Exception e) {
             // there is no data in this tile
             if ("NoSuchKey".equals(e.getErrorCode()))
