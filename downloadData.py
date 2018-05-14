@@ -131,9 +131,9 @@ for state in states:
     print('Downloading LODES data')
 
     # figure out the year of the latest available data
-    # Most states have 2014 data available
-    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.2.pdf, page 2f
-    year = 2014
+    # Most states have 2015 data available
+    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.3.pdf, page 2f
+    year = 2015
 
     # Wyoming does not have LODES2014 data available
     if state == 'WY':
