@@ -46,7 +46,7 @@ public abstract class SeamlessSource {
         Map<Long, GeobufFeature> ret;
 
         if (onDisk)
-            ret = DBMaker.tempTreeMap();
+            ret = DBMaker.newTempTreeMap();
         else
             ret = new HashMap<>();
 
