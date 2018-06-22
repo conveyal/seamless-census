@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.concurrent.*;
+import java.util.function.BiFunction;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -41,22 +42,27 @@ public class ShapeDataStore {
     private BTreeMap<Long, GeobufFeature> features;
 
     public ShapeDataStore() {
-        db = DBMaker.newTempFileDB().deleteFilesAfterClose().asyncWriteEnable()
+        db = DBMaker.tempFileDB().deleteFilesAfterClose().asyncWriteEnable()
                 .transactionDisable()
-                .mmapFileEnable()
+                .fileMmapEnable()
                 .asyncWriteEnable()
                 .asyncWriteFlushDelay(1000)
+                .executorEnable()
                 .asyncWriteQueueSize(10000)
+                // start with 1GB
+                .allocateStartSize(1024 * 1024 * 1024)
+                // and bump by 512MB
+                .allocateIncrement(512 * 1024 * 1024)
                 .make();
 
-        features = db.createTreeMap("features")
-                .keySerializer(BTreeKeySerializer.ZERO_OR_POSITIVE_LONG)
+        features = db.treeMapCreate("features")
+                .keySerializer(BTreeKeySerializer.LONG)
                 .valueSerializer(new GeobufEncoder.GeobufFeatureSerializer(12))
                 .counterEnable()
                 .make();
 
-        tiles = db.createTreeSet("tiles")
-                .serializer(BTreeKeySerializer.BASIC)
+        tiles = db.treeSetCreate("tiles")
+                .serializer(BTreeKeySerializer.ARRAY3)
                 .make();
 
         // bind the map by tile
