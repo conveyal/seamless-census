@@ -2,6 +2,7 @@ package com.conveyal.data.census;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 
@@ -12,7 +13,7 @@ import java.io.InputStream;
  * A seamless data source based on storage in Amazon S3.
  */
 public class S3SeamlessSource extends SeamlessSource {
-    private static AmazonS3 s3 = new AmazonS3Client();
+    private static AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
 
     public final String bucketName;
 

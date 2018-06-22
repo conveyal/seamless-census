@@ -1,7 +1,7 @@
 package com.conveyal.data.census;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
@@ -129,8 +129,7 @@ public class ShapeDataStore {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         // initialize an S3 client
-        AmazonS3 s3 = new AmazonS3Client();
-
+        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
         try {
             writeTilesInternal((x, y) -> {
                 PipedInputStream is = new PipedInputStream();
