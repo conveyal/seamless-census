@@ -44,4 +44,4 @@ Note that using this tool will therefore incur small fees on your AWS account.
 
 ## Use in Analyst Server
 
-Any dataset that can be placed in this format can be used in Analyst Server.
+Any dataset that can be placed in this format can be used in [Conveyal Analysis](https://github.com/conveyal/analysis-ui)
