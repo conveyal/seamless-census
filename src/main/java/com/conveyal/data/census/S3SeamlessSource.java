@@ -18,6 +18,12 @@ public class S3SeamlessSource extends SeamlessSource {
     public final String region;
     public final String bucketName;
 
+    public S3SeamlessSource(String bucketName) {
+        this.region = null;
+        this.bucketName = bucketName;
+        this.s3 = AmazonS3ClientBuilder.defaultClient();
+    }
+
     public S3SeamlessSource(String region, String bucketName) {
         this.region = region;
         this.bucketName = bucketName;
