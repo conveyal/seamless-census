@@ -4,6 +4,8 @@ Import US Census data into a seamless storage environment.
 
 ## Usage
 
+Running the download and load steps for the entire US requires ~45 GB of disk space.
+
 ### Download data
 
 You can use the following command to download
@@ -19,7 +21,7 @@ The command below, for instance, would download data for the greater Washington,
 Use the same temporary directory
 you used above. If you omit the s3 bucket name, it will place the tiles in the `tiles` directory in the temporary directory.
 
-    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusLoader" -Dexec.args="temporary_dir s3_bucket_name"
+    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusLoader" -Dexec.args="temporary_dir s3_region s3_bucket_name"
 
 ### Extract data
 
@@ -39,9 +41,12 @@ Enumeration units that fall into two tiles should be included in both tiles. It 
 of the data consumer to deduplicate them; this can be done based on IDs. An enumeration unit that is
 duplicated across tiles must have the same integer ID in both tiles.
 
-We have already loaded LODES data from 2013 and 2014 in the S3 buckets `lodes-data` and `lodes-data-2014`, which are publicly readable and requester-pays. The 2013 data lacks Massachusetts, and uses 2011 data for Kansas, due to data availability. The 2014 data does not have these problems.
-Note that using this tool will therefore incur small fees on your AWS account.
+We have already loaded LODES data from 2013, 2014, 2015, and 2017 in the S3 buckets `lodes-data`, `lodes-data-2014`, `lodes-data-2015`, etc.
+These buckets and their contents are publicly readable and requester-pays (i.e. accessing them will incur fees on your AWS account). 
+The 2013 data lack Massachusetts, and uses 2011 data for Kansas, due to data availability. 
+The 2014 and 2015 data do not have these problems.
+The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota. See LODES Technical Documentation for details.
 
-## Use in Analyst Server
+## Use in Conveyal Analysis
 
 Any dataset that can be placed in this format can be used in [Conveyal Analysis](https://github.com/conveyal/analysis-ui)

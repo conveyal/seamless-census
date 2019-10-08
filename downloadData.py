@@ -143,7 +143,7 @@ for state in states:
         year = 0
 
     if year:
-        print("Dowloading {0} LODES data for {1}".format(year, state))
+        print("Downloading {0} LODES data for {1}".format(year, state))
 
         # get the rac file
         out = os.path.join(outDir, 'workforce', '{0}_{1}_rac.csv.gz'.format(state, year))

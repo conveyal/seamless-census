@@ -66,7 +66,7 @@ public class CensusLoader {
             store.writeTiles(new File(indir, "tiles"));
         else
             // write to s3
-            store.writeTilesToS3(args[1]);
+            store.writeTilesToS3(args[1], args[2]);
 
         store.close();
     }
