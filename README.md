@@ -21,7 +21,7 @@ The command below, for instance, would download data for the greater Washington,
 Use the same temporary directory
 you used above. If you omit the s3 bucket name, it will place the tiles in the `tiles` directory in the temporary directory.
 
-    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusLoader" -Dexec.args="temporary_dir s3_region s3_bucket_name"
+    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusLoader" -Dexec.args="temporary_dir s3_bucket_name"
 
 ### Extract data
 

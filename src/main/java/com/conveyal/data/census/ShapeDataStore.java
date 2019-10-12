@@ -3,7 +3,6 @@ package com.conveyal.data.census;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.Region;
 import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
 import com.vividsolutions.jts.geom.Envelope;
@@ -125,13 +124,13 @@ public class ShapeDataStore {
     }
 
     /** Write GeoBuf tiles to S3 */
-    public void writeTilesToS3 (String region, String bucketName) throws IOException {
+    public void writeTilesToS3 (String bucketName) throws IOException {
         // set up an upload thread
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         // initialize an S3 client
         AmazonS3 s3 =
-                AmazonS3ClientBuilder.standard().withRegion(region).build();
+                AmazonS3ClientBuilder.standard().build();
         try {
             writeTilesInternal((x, y) -> {
                 PipedInputStream is = new PipedInputStream();
