@@ -129,7 +129,8 @@ public class ShapeDataStore {
         ExecutorService executor = Executors.newSingleThreadExecutor();
 
         // initialize an S3 client
-        AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+        AmazonS3 s3 =
+                AmazonS3ClientBuilder.standard().build();
         try {
             writeTilesInternal((x, y) -> {
                 PipedInputStream is = new PipedInputStream();

@@ -132,18 +132,18 @@ for state in states:
 
     # figure out the year of the latest available data
     # Most states have 2015 data available
-    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.3.pdf, page 2f
-    year = 2015
+    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf, page 2f
+    year = 2017
 
-    # Wyoming does not have LODES2014 data available
-    if state == 'WY':
-        year = 2013
+    # Alaska and South Dakota do not have LODES2017 data available, so use 2016
+    if state == 'AK' or state == 'SD':
+        year = 2016
     elif state == 'PR' or state == 'VI':
         print('{0} does not have LODES data available'.format(state))
         year = 0
 
     if year:
-        print("Dowloading {0} LODES data for {1}".format(year, state))
+        print("Downloading {0} LODES data for {1}".format(year, state))
 
         # get the rac file
         out = os.path.join(outDir, 'workforce', '{0}_{1}_rac.csv.gz'.format(state, year))
