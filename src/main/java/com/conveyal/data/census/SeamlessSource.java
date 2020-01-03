@@ -2,9 +2,9 @@ package com.conveyal.data.census;
 
 import com.conveyal.data.geobuf.GeobufDecoder;
 import com.conveyal.data.geobuf.GeobufFeature;
-import com.vividsolutions.jts.geom.*;
-import com.vividsolutions.jts.geom.prep.PreparedPolygon;
-import com.vividsolutions.jts.util.GeometricShapeFactory;
+import org.locationtech.jts.geom.*;
+import org.locationtech.jts.geom.prep.PreparedPolygon;
+import org.locationtech.jts.util.GeometricShapeFactory;
 import org.mapdb.DBMaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

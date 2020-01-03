@@ -5,7 +5,7 @@ import com.conveyal.data.geobuf.GeobufFeature;
 import com.csvreader.CsvReader;
 import com.google.common.io.ByteStreams;
 import com.google.common.io.Files;
-import com.vividsolutions.jts.geom.Envelope;
+import org.locationtech.jts.geom.Envelope;
 import gnu.trove.map.TLongObjectMap;
 import gnu.trove.map.hash.TLongObjectHashMap;
 import junit.framework.TestCase;
