@@ -4,10 +4,10 @@ import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
 import com.conveyal.geojson.GeoJsonModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryCollection;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.GeometryCollection;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.Polygon;
 
 import java.io.*;
 import java.util.List;

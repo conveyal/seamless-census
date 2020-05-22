@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.conveyal.data.geobuf.GeobufEncoder;
 import com.conveyal.data.geobuf.GeobufFeature;
-import com.vividsolutions.jts.geom.Envelope;
+import org.locationtech.jts.geom.Envelope;
 import org.mapdb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
