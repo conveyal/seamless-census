@@ -6,7 +6,11 @@
 
     <groupId>com.conveyal.data.census</groupId>
     <artifactId>seamless-census</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -31,7 +35,7 @@
         <dependency>
             <groupId>com.conveyal</groupId>
             <artifactId>geobuf-java</artifactId>
-            <version>1.0-20200103.171801-8</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>net.sf.trove4j</groupId>
