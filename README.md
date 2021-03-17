@@ -45,7 +45,9 @@ We have already loaded LODES data from 2013, 2014, 2015, and 2017 in the S3 buck
 These buckets and their contents are publicly readable and requester-pays (i.e. accessing them will incur fees on your AWS account). 
 The 2013 data lack Massachusetts, and uses 2011 data for Kansas, due to data availability. 
 The 2014 and 2015 data do not have these problems.
-The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota. See LODES Technical Documentation for details.
+The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota (see [LODES Technical Documentation 7.4](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf))
+The 2018 data use 2016 data for Alaska WAC. (see [LODES Technical Documentation 7.5](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.5.pdf))
+
 
 ## Use in Conveyal Analysis
 
