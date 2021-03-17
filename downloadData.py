@@ -138,7 +138,7 @@ for state in states:
     # Alaska and South Dakota do not have LODES2017 data available, so use 2016
     if state == 'AK':
         year = 2016
-    elif state == 'PR' or state == 'VI':
+    elif state == 'PR' or state == 'VI' or state == 'AS':
         print('{0} does not have LODES data available'.format(state))
         year = 0
 
