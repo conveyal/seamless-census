@@ -1,6 +1,8 @@
 # seamless-census
 
-Import US Census data into a seamless storage environment.
+Download US Census data for use in a seamless storage environment.
+
+Java main classes for loading/extracting these data have been moved to [r5](https://github.com/conveyal/r5) and a gradle (as opposed to maven) build system.
 
 ## Usage
 
@@ -18,17 +20,16 @@ The command below, for instance, would download data for the greater Washington,
 
 ### Load data
 
-Use the same temporary directory
-you used above. If you omit the s3 bucket name, it will place the tiles in the `tiles` directory in the temporary directory.
+Load data using a built r5 .jar (e.g. v6.2.jar).  Use the same data directory you used above. If you omit the s3 bucket name, it will place the tiles in the `tiles` directory in the temporary directory.
 
-    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusLoader" -Dexec.args="temporary_dir s3_bucket_name"
+    java -Xmx30G -cp v6.2.jar com.conveyal.data.census.CensusLoader data lodes-data-xxxx 
 
 ### Extract data
 
 Now for the fun part. The following command will extract the data stored in the s3 bucket specified, using the bounding box specified,
 to the geobuf file out.pbf.
 
-    JAVA_OPTS=-Xmx[several]G mvn exec:java -Dexec.mainClass="com.conveyal.data.census.CensusExtractor" -Dexec.args="s3://bucket_name n e s w out.pbf"
+    java -Xmx30G -cp v6.2.jar com.conveyal.data.census.CensusExtractor s3://lodes-data-xxxx n e s w out.pbf"
 
 ## Data storage
 
@@ -45,7 +46,9 @@ We have already loaded LODES data from 2013, 2014, 2015, and 2017 in the S3 buck
 These buckets and their contents are publicly readable and requester-pays (i.e. accessing them will incur fees on your AWS account). 
 The 2013 data lack Massachusetts, and uses 2011 data for Kansas, due to data availability. 
 The 2014 and 2015 data do not have these problems.
-The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota. See LODES Technical Documentation for details.
+The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota (see [LODES Technical Documentation 7.4](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf))
+The 2018 data use 2016 data for Alaska WAC. (see [LODES Technical Documentation 7.5](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.5.pdf))
+
 
 ## Use in Conveyal Analysis
 
