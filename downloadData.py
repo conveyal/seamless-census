@@ -131,13 +131,15 @@ for state in states:
     print('Downloading LODES data')
 
     # figure out the year of the latest available data
-    # Most states have 2015 data available
-    # see http://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf, page 2f
-    year = 2018
+    # see https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.5.pdf, p 3
+    year = 2019
 
-    # Alaska and South Dakota do not have LODES2017 data available, so use 2016
+    # Alaska does not have 2017-2019 LODES data available, so use 2016
     if state == 'AK':
         year = 2016
+    # Arkansas and Mississippi do not have 2019 LODES data available, so use 2018
+    elif state == 'AR' or state == 'MS':
+        year = 2018
     elif state == 'PR' or state == 'VI' or state == 'AS':
         print('{0} does not have LODES data available'.format(state))
         year = 0
