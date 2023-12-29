@@ -47,7 +47,8 @@ These buckets and their contents are publicly readable and requester-pays (i.e. 
 * The 2013 data lack Massachusetts, and uses 2011 data for Kansas, due to data availability. 
 * The 2014 and 2015 data do not have these problems.
 * The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota (see [LODES Technical Documentation 7.4](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf))
-* The 2018 data use 2016 data for Alaska WAC. The 2019 data are missing WAC files for Alaska, Arkansas, and Mississippi (see [LODES Technical Documentation 7.5](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.5.pdf)).
+* The 2018 data use 2016 data for Alaska WAC. 
+* The 2019-2021 data are missing WAC files for Alaska, Arkansas, and Mississippi (see [LODES Technical Documentation 8.1](https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.1.pdf)).
 
 
 ## Use in Conveyal Analysis

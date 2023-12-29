@@ -111,7 +111,7 @@ for state in states:
     # get tiger
     fips = fipsCodes[state]
     zipout = os.path.join(outDir, "tiger", "{0}.zip".format(state))
-    retrieve("ftp://ftp2.census.gov/geo/tiger/TIGER2010/TABBLOCK/2010/tl_2010_{0}_tabblock10.zip".format(fips), zipout)
+    retrieve("https://www2.census.gov/geo/tiger/TIGER2021/TABBLOCK20/tl_2021_{0}_tabblock20.zip".format(fips), zipout)
 
     # unzip it
     # adapted from http://stackoverflow.com/questions/12886768/
@@ -131,13 +131,13 @@ for state in states:
     print('Downloading LODES data')
 
     # figure out the year of the latest available data
-    # see https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.5.pdf, p 3
-    year = 2019
+    # see https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.1.pdf, p 4
+    year = 2021
 
-    # Alaska does not have 2017-2019 LODES data available, so use 2016
+    # Alaska does not have 2017-2021 LODES data available, so use 2016
     if state == 'AK':
         year = 2016
-    # Arkansas and Mississippi do not have 2019 LODES data available, so use 2018
+    # Arkansas and Mississippi do not have 2019-2021 LODES data available, so use 2018
     elif state == 'AR' or state == 'MS':
         year = 2018
     elif state == 'PR' or state == 'VI' or state == 'AS':
@@ -149,10 +149,10 @@ for state in states:
 
         # get the rac file
         out = os.path.join(outDir, 'workforce', '{0}_{1}_rac.csv.gz'.format(state, year))
-        retrieve("http://lehd.ces.census.gov/data/lodes/LODES7/{0}/rac/{0}_rac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
+        retrieve("http://lehd.ces.census.gov/data/lodes/LODES8/{0}/rac/{0}_rac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
 
         # get the wac file
         out = os.path.join(outDir, 'jobs', '{0}_{1}_wac.csv.gz'.format(state, year))
-        retrieve("http://lehd.ces.census.gov/data/lodes/LODES7/{0}/wac/{0}_wac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
+        retrieve("http://lehd.ces.census.gov/data/lodes/LODES8/{0}/wac/{0}_wac_S000_JT00_{1}.csv.gz".format(state.lower(), year), out)
 
     print('Done with {0}'.format(state))
