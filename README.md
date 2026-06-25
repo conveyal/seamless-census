@@ -42,14 +42,15 @@ Enumeration units that fall into two tiles should be included in both tiles. It 
 of the data consumer to deduplicate them; this can be done based on IDs. An enumeration unit that is
 duplicated across tiles must have the same integer ID in both tiles.
 
-We have already loaded LODES data from 2013, 2014, 2015, and 2017 in the S3 buckets `lodes-data`, `lodes-data-2014`, `lodes-data-2015`, etc.
-These buckets and their contents are publicly readable and requester-pays (i.e. accessing them will incur fees on your AWS account). 
-* The 2013 data lack Massachusetts, and uses 2011 data for Kansas, due to data availability. 
+We have already loaded LODES data from 2013 through 2023 in the S3 buckets `lodes-data`, `lodes-data-2014`, `lodes-data-2015`, etc.
+These buckets and their contents are publicly readable and requester-pays (i.e. accessing them will incur fees on your AWS account). In the intervening years, some missing data have been filled back in, but we have not re-processed the data to reflect these updates.
+* Our 2013 processed data lack Massachusetts, and uses 2011 data for Kansas, due to data availability. 
 * The 2014 and 2015 data do not have these problems.
-* The 2017 data exclude federal employees and use 2016 data for Alaska and South Dakota (see [LODES Technical Documentation 7.4](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf))
-* The 2018 data use 2016 data for Alaska WAC. 
-* The 2019-2021 data are missing WAC files for Alaska, Arkansas, and Mississippi (see [LODES Technical Documentation 8.1](https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.1.pdf)).
-* The 2022 data are missing WAC files for Alaska, Mississippi, and Michigan.
+* Our 2017 processed data exclude federal employees and use 2016 data for Alaska and South Dakota (see [LODES Technical Documentation 7.4](https://lehd.ces.census.gov/data/lodes/LODES7/LODESTechDoc7.4.pdf))
+* Our 2018 processed data use 2016 data for Alaska WAC. 
+* Our 2019-2021 processed data are missing WAC files for Alaska, Arkansas, and Mississippi (see [LODES Technical Documentation 8.1](https://lehd.ces.census.gov/data/lodes/LODES8/LODESTechDoc8.1.pdf)).
+* Our 2022 processed data are missing WAC files for Alaska, Mississippi, and Michigan.
+* Our 2023 processed data use 2016 data for Alaska and 2021 data for Michigan 
 
 
 ## Use in Conveyal Analysis

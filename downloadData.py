@@ -111,7 +111,7 @@ for state in states:
     # get tiger
     fips = fipsCodes[state]
     zipout = os.path.join(outDir, "tiger", "{0}.zip".format(state))
-    retrieve("https://www2.census.gov/geo/tiger/TIGER2023/TABBLOCK20/tl_2023_{0}_tabblock20.zip".format(fips), zipout)
+    retrieve("https://www2.census.gov/geo/tiger/TIGER2024/TABBLOCK20/tl_2024_{0}_tabblock20.zip".format(fips), zipout)
 
     # unzip it
     # adapted from http://stackoverflow.com/questions/12886768/
@@ -132,15 +132,12 @@ for state in states:
 
     # figure out the year of the latest available data
     # see https://lehd.ces.census.gov/doc/help/onthemap/LODESTechDoc.pdf, p 4
-    year = 2022
+    year = 2023
 
-    # Alaska does not have 2017-2021 LODES data available, so use 2016
+    # Alaska does not have 2017-2023 LODES data available, so use 2016
     if state == 'AK':
         year = 2016
-    # Mississippi does not have 2019-2021 LODES data available, so use 2018
-    elif state == 'MS':
-        year = 2018
-    # Michigan does not have 2022 LODES data available, so use 2021
+    # Michigan does not have 2022-2023 LODES data available, so use 2021
     elif state == 'MI':
         year = 2021
     elif state == 'PR' or state == 'VI' or state == 'AS':
